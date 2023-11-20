@@ -29,6 +29,21 @@ class TodoScreen extends StatefulWidget {
 
 class _TodoScreenState extends State<TodoScreen> {
   List<String> tasks = [];
+  late SharedPreferences prefs;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadTasks();
+  }
+
+  // Function to load the tasks from the shared preferences
+  Future<void> _loadTasks() async {
+    prefs = await SharedPreferences.getInstance();
+    setState(() {
+      tasks = prefs.getStringList('tasks') ?? [];
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,6 +97,9 @@ class _TodoScreenState extends State<TodoScreen> {
         tasks.add(task);
         _taskController.clear();
       });
+
+      // Save the task to the shared preferences
+      prefs.setStringList('tasks', tasks);
     }
   }
 }
